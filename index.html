@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Falcon heavy rocket with HTML CSS JS</title>
+
+</head>
+<body>
+	<div class="canvas">
+		<!-- SVG -->
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" class="svg">
+			<circle cx="450" cy="30" r="20" fill="white"/>
+			<circle cx="440" cy="27" r="17" fill="#222"/>
+		</svg>
+		<!-- Fusée -->
+		<div class="rocket" id="rocket" x="0">
+			<img src="spacex.png" alt=""><span></span>
+		</div>
+		<!-- CONTAINER QUI CONTIENT LES DONNÉES DE VOL -->
+		<div class="data__container">
+			<h1>Falcon Heavy</h1>
+			<p class="altitude">Altitude : 0m</p>
+			<p class="vitesse">Vitesse: 0km/h</p>
+			<p class="t0">T+: 0s</p>
+			<p class="mass">Total Mass : 1420t</p>
+			<p class="fuel">Fuel Mass : 433.1t</p>
+		</div>
+		<!-- BARRE DE FUEL -->
+		<div class="fuel__container">
+			<div class="fuel__background"></div>
+			<div class="fuel__bar" id="fuel-bar" style="height: 15%;"></div>
+		</div>
+		<!-- CONTAINER QUI CONTIENT LE PROJET VOL SPACEX -->
+		<div class="next__flight">
+			<h6>Prochaine mission :</h6>
+			<p class="data__flight">Still unknown</p>
+		</div>
+	</div>
+	<script>
+		function stars() {
+			let count = 50;
+			let canvas = document.querySelector('.canvas');
+			let rocket = document.querySelector('.rocket');
+			let test = document.getElementById('rocket');
+			let fuelbar = document.getElementById('fuel-bar');
+
+			let i = 0;
+			var temps = 1;
+			var height = 1;
+			var speedRocket = 1;
+			var gravitas =9.8; 
+			var fuel = 433.1;
+			var massTotal = 1420;
+			var timeOfFlight = 360;
+			var fuelPercent = 15/timeOfFlight;
+			var fuelTime = 433.1/timeOfFlight;
+			var nameNext = "Still unknown";
+			
+			// FETCH API POUR RECUPERER LE PROCHAIN VOL
+			fetch('https://api.spacexdata.com/v4/launches/next')
+				.then((response) => response.json())
+				.then((data) => {
+					console.log(data);
+					var nameNext = data.name;
+					let targetFlight = document.querySelector('.data__flight');
+					targetFlight.innerHTML = '' + nameNext;
+				});	
+
+
+			function ajouterTemps() {		
+				//PERMET DE MODIFIER LA TAILLE DES ÉTOILES	
+				let myElement = document.querySelectorAll('i');
+				for(let i = 0; i < myElement.length; i++) {
+					var data = parseInt(myElement[i].style.height);
+					myElement[i].setAttribute("height", temps + 'px');
+					myElement[i].style.height = (1 *temps) +'px';
+				}
+
+				let altitude = document.querySelector('.altitude');
+				let speed = document.querySelector('.vitesse');
+				let t0 = document.querySelector('.t0');
+				let totalM = document.querySelector('.mass');
+				let fuelM = document.querySelector('.fuel');
+
+				//PERMET DE VERIFIER SI LE FUEL EST ENCORE NON NULL
+				if(timeOfFlight > 1) {
+					if(fuel > fuelTime) {
+						fuel = fuel - (Math.ceil(fuel/timeOfFlight));
+						timeOfFlight--;
+					}else {
+						fuel = 0;
+					}
+				}
+
+				//CALCUL DE LA MASSE, VITESSE ET ALTITUDE
+				massTotal = massTotal - Math.ceil(fuel/timeOfFlight);
+				if(fuel != 0){
+					height = height + Math.ceil((height/temps)*2);
+					speedRocket = speedRocket + Math.ceil((speedRocket/temps)*Math.random()*3);
+					altitude.innerHTML = "Altitude : " + height + "m";
+					speed.innerHTML = "Vitesse : " + speedRocket + "km/h";
+					t0.innerHTML = "T+ : " + temps + "s";
+				}
+				totalM.innerHTML = "Total Mass : " + massTotal + "t";
+				fuelM.innerHTML = "Fuel Mass : " + fuel + "t";
+
+				//MODIFIE LA TAILLE DE LA FUELBAR
+				let fuelHeight = fuelbar.style.getPropertyValue("height").replace('%','');
+				if(fuelHeight > fuelPercent) {
+					console.log(fuelHeight);
+					console.log(fuelPercent);
+					fuelbar.style.height = (fuelHeight - fuelPercent) + '%';
+				}else {
+					console.log("fuel vide");
+					console.log(fuelbar.style.height = '0%');
+				}
+				temps++;	
+			}
+
+			// ON INCRÉMENTE TOUTES LES SECONDES
+			setInterval(ajouterTemps, 1000);
+
+			//TANT QUE LE NOMBRE D'ÉTOILES ET INFERIEUR AU NOMBRE D'ÉTOILES MAX
+			while(i < count){
+				// ON FABRIQUE LES ÉTOILES
+				let star = document.createElement('i');
+				let x = Math.floor(Math.random() * window.innerWidth);
+				let duration = Math.random() * 1;
+				let h = 0;	
+				star.style.left = x + 'px';
+				star.style.width = 1 + 'px';
+				star.style.height = h + 'px';
+				//ON AJOUTE L'ANIMATION DE DÉFILEMENT AUX ÉTOILES
+				star.style.animation = Math.random() + 's infinite normal none running sanimate';
+				star.setAttribute("id", "stars");
+				star.style.animationDuration = duration + 's';
+				canvas.appendChild(star);
+				i++;
+			}		
+
+			document.addEventListener('keydown', (e) => {
+				var touchPresssed = e.key;		
+				var inclinaison = parseInt(test.attributes.x.value);
+				//PERMET DE DÉTECTER LA FRAPPE CLAVIER, SI OUI ON CHANGE LES ANIMATIONS
+				if(touchPresssed == "q") {
+					console.log("à gauche");
+					rocket.style.transform = "rotate("+(inclinaison - 1)+"deg)";
+					rocket.setAttribute("x", parseInt(inclinaison-1));
+				}
+
+				//PERMET DE DÉTECTER LA FRAPPE CLAVIER, SI OUI ON CHANGE LES ANIMATIONS
+				if(touchPresssed == "d") {
+					console.log("à droite");
+					rocket.style.transform = "rotate("+ (inclinaison + 1) +"deg)";
+					rocket.setAttribute("x", parseInt(inclinaison+1));
+				}
+
+				// ON REGARDE L'INCLINAISON DE LA FUSÉE
+				var inclinaison = parseInt(test.attributes.x.value);
+				if(inclinaison > 20) {
+					let myElement = document.querySelectorAll('i');
+					for(let i = 0; i < myElement.length; i++) {
+						myElement[i].style.animation = Math.random() + 's infinite normal none running sanimate-left';
+					}
+				}
+				// ON REGARDE L'INCLINAISON DE LA FUSÉE
+				if(inclinaison < -20) {
+					let myElement = document.querySelectorAll('i');
+					for(let i = 0; i < myElement.length; i++) {
+						myElement[i].style.animation = Math.random() + 's linear 0s infinite normal running sanimate-right';
+					}
+				}
+				// ON REGARDE L'INCLINAISON DE LA FUSÉE
+				if(inclinaison > -20 && inclinaison < 20) {
+					myElement[i].style.animation = Math.random() + 's infinite normal none running sanimate';
+				}
+				// ON REGARDE L'INCLINAISON DE LA FUSÉE
+				if(inclinaison > 45) {
+					let myElement = document.querySelectorAll('i');
+					for(let i = 0; i < myElement.length; i++) {
+						myElement[i].style.animation = Math.random() + 's infinite normal none running sanimate-left-extreme';
+					}
+				}
+				// ON REGARDE L'INCLINAISON DE LA FUSÉE
+				if(inclinaison < -45) {
+					let myElement = document.querySelectorAll('i');
+					for(let i = 0; i < myElement.length; i++) {
+						myElement[i].style.animation = Math.random() + 's linear 0s infinite normal running sanimate-right-extreme';	
+					}
+				}
+			});
+		}
+
+		//ON APPELLE LA METHODE PRINCIPALE
+		stars();
+	</script>
+</body>
+</html>

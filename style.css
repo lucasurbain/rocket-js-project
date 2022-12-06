@@ -1,0 +1,253 @@
+/*========== IMPORTS GOOGLE FONT ==========*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/*========== INITIAL ==========*/
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body,
+html{
+	height: 100%;
+	width:100%;
+}
+
+.canvas{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background: #222;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.svg {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	animation: moon-shaking 10s infinite;
+}
+
+/*========== ROCKET ELEMENT ==========*/
+.rocket{
+	position: relative;
+	transform: rotate(0deg);
+}
+
+.rocket img{
+	display: inline-block;
+	width: 50px;
+	height: auto;
+}
+
+/*========== FLAME OF THE ROCKET ==========*/
+.rocket:before{
+	content: '';
+	position: absolute;
+	width: 16px;
+	height: 40%;
+	top: 100%;
+	background: linear-gradient(#e67e22, #f39c12 10%, transparent);
+	filter: blur(2px);
+	animation: horizontal-shaking 1s infinite;
+	animation-delay: 1s;
+}
+
+.rocket:after{
+	content: '';
+	position: absolute;
+	width: 16px;
+	height: 41%;
+	top: 100%;
+	right: 0;
+	background: linear-gradient(#e67e22, #f39c12 10%, transparent);
+	filter: blur(2px);
+	animation: horizontal-shaking 1s infinite;
+	animation-delay: 0.2s;
+
+}
+
+.rocket span{
+	content: '';
+	position: absolute;
+	width: 16px;
+	height: 45%;
+	top: 100%;
+	left: 17px;
+	background: linear-gradient(#e67e22, #f39c12 10%, transparent);
+	filter: blur(2px);
+	animation: horizontal-shaking 1s infinite;
+	animation-delay: 0.8s;
+}
+
+/*========== STARS ==========*/
+.canvas i {
+	position: absolute;
+	top: -150px;
+	transform: none;
+	background: rgba(255,255,255,.5);
+}
+
+/*========== ALL CONTAINERS ==========*/
+.data__container {
+	position: fixed;
+	width: 100%;
+	height: 20%;
+	background-color: #FAFAFA;
+	bottom: 0;
+	left: 0;
+	border-right: 2px solid gray;
+	border-top: 2px solid gray;
+	padding-top: 20px;
+	padding-left: 20px;
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	z-index: 100;	
+}
+
+.fuel__container {
+	position: fixed;
+	width: 60px;
+	height: 18%;
+	background-color: #FAFAFA;
+	bottom: 20%;
+	right: 0;
+	border-left: 2px solid gray;
+	border-top: 2px solid gray;
+	border-radius: 5px 0 0 0;
+	padding-top: 20px;
+	padding-left: 20px;
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	z-index: 10;
+}
+
+.fuel__bar {
+	position: fixed;
+	width: 20px;
+	background-color: green;
+	bottom: 21%;
+	right: 18px;
+	border: 2px solid gray;
+	padding-top: 1px;
+	padding-left: 20px;
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	z-index: 12;
+}
+
+.fuel__background {
+	position: fixed;
+	width: 20px;
+	height: 15%;
+	background-color: rgba(128, 128, 128, 0.6);
+	bottom: 21%;
+	right: 18px;
+	border: 2px solid gray;
+	padding-top: 20px;
+	padding-left: 20px;
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	z-index: 10;
+}
+
+.next__flight {
+	position: fixed;
+	width: 20%;
+	min-width: 150px;
+	height: 5%;
+	background-color: #FAFAFA;
+	top: 0%;
+	left: 0;
+	border-left: 2px solid gray;
+	border-top: 2px solid gray;
+	border-radius: 0 0 5px 0;
+	padding-top: 10px;
+	padding-left: 1%;
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	z-index: 10;
+}
+
+/*========== KEYFRAMES ==========*/
+@keyframes sanimate{
+	0%{
+		transform: translateY(0);
+	}
+
+	100%{
+		transform: translateY(100vh);
+	}
+}
+
+@keyframes sanimate-left{
+	0%{
+		transform: translateY(0);
+		transform: translateX(10vh);
+	}
+
+	100%{
+		transform: translateY(100vh);
+	}
+}
+
+@keyframes sanimate-right{
+	0%{
+		transform: translateY(0);
+		transform: translateX(-10vh);
+	}
+
+	100%{
+		transform: translateY(100vh);
+	}
+}
+
+@keyframes sanimate-left-extreme{
+	0%{
+		transform: translateY(0);
+		transform: translateX(30vh);
+
+	}
+
+	100%{
+		transform: translateY(100vh);
+
+	}
+}
+
+@keyframes sanimate-right-extreme{
+	0%{
+		transform: translateY(0);
+		transform: translateX(-30vh);
+	}
+
+	100%{
+		transform: translateY(100vh);
+	}
+}
+
+@keyframes horizontal-shaking {
+	0% { transform: translateX(0) }
+	25% { transform: translateX(1px) }
+	50% { transform: translateX(0px) }
+	75% { transform: translateX(1px) }
+	100% { transform: translateX(0) }
+}
+
+@keyframes moon-shaking {
+	10%, 90% {
+	  transform: translate3d(-1px, 0, 0);
+	}
+	
+	20%, 80% {
+	  transform: translate3d(2px, 0, 0);
+	}
+  
+	30%, 50%, 70% {
+	  transform: translate3d(-4px, 0, 0);
+	}
+  
+	40%, 60% {
+	  transform: translate3d(4px, 0, 0);
+	}
+  }
